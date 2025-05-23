@@ -1,0 +1,76 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "create-block/recent-posts-showcase",
+    "version": "0.1.0",
+    "title": "Recent Post Showcase",
+    "category": "widgets",
+    "icon": "smiley",
+    "description": "Example block scaffolded with Create Block tool.",
+    "example": {},
+    "supports": {
+        "html": false,
+        "color": {
+            "text": true,
+            "background": true
+        }
+    },
+    "textdomain": "team-member-profile",
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./index.css",
+    "style": "file:./style-index.css",
+    "viewScript": "file:./view.js",
+    "render": "file:./render.php",
+    "attributes": {
+        "postType": {
+            "type": "string",
+            "default": "post"
+        },
+        "postsToShow": {
+            "type": "number",
+            "default": 5
+        },
+        "categories": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "number"
+            }
+        },
+        "displayImage": {
+            "type": "boolean",
+            "default": true
+        },
+        "displayExcerpt": {
+            "type": "boolean",
+            "default": true
+        },
+        "displayAuthor": {
+            "type": "boolean",
+            "default": false
+        },
+        "displayDate": {
+            "type": "boolean",
+            "default": false
+        },
+        "layout": {
+            "type": "string",
+            "default": "grid"
+        },
+        "pagination": {
+            "type": "boolean",
+            "default": false
+        },
+        "className": {
+            "type": "string"
+        },
+        "postsPerPage": {
+            "type": "number",
+            "default": 6
+        },
+        "enableLoadMore": {
+            "type": "boolean",
+            "default": false
+        }
+    }
+}
