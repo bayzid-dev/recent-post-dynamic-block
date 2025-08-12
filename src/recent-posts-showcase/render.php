@@ -12,9 +12,12 @@
 	 * @return string Block HTML.
 	 */
 	// Set default attributes.
-	$post_type       = isset( $attributes['postType'] ) ? $attributes['postType'] : 'post';
-	$posts_to_show   = isset( $attributes['postsToShow'] ) ? intval( $attributes['postsToShow'] ) : 5;
-	$categories      = isset( $attributes['categories'] ) ? $attributes['categories'] : array();
+	$post_type     = isset( $attributes['postType'] ) ? $attributes['postType'] : 'post';
+	$posts_to_show = isset( $attributes['postsToShow'] ) ? intval( $attributes['postsToShow'] ) : 5;
+
+	$taxonomy = ! empty( $attributes['taxonomy'] ) ? sanitize_text_field( $attributes['taxonomy'] ) : '';
+	$terms    = ! empty( $attributes['terms'] ) ? array_map( 'intval', $attributes['terms'] ) : array();
+
 	$display_image   = ! empty( $attributes['displayImage'] );
 	$display_excerpt = ! empty( $attributes['displayExcerpt'] );
 	$display_author  = ! empty( $attributes['displayAuthor'] );
@@ -28,16 +31,31 @@
 		'post_status'    => 'publish',
 	);
 
-	// Apply tax_query if categories are set.
-	if ( ! empty( $categories ) && is_array( $categories ) ) {
+
+    var_dump( $attributes['taxonomy'] );
+    var_dump( $attributes['terms'] );
+
+    
+	if ( $taxonomy && ! empty( $terms ) ) {
 		$args['tax_query'] = array(
 			array(
-				'taxonomy' => 'category',
+				'taxonomy' => $taxonomy,
 				'field'    => 'term_id',
-				'terms'    => $categories,
+				'terms'    => $terms,
 			),
 		);
 	}
+
+	// Apply tax_query if categories are set.
+	// if ( ! empty( $categories ) && is_array( $categories ) ) {
+	// $args['tax_query'] = array(
+	// array(
+	// 'taxonomy' => 'category',
+	// 'field'    => 'term_id',
+	// 'terms'    => $categories,
+	// ),
+	// );
+	// }
 
 	$query = new WP_Query( $args );
 
@@ -113,6 +131,57 @@
 		echo '<button class="rps-load-more-button">' . esc_html__( 'Load More', 'recent-posts-showcase' ) . '</button>';
 		echo '</div>';
 	}
+
+	// Existing output above
+
+	echo '</div>'; // close post list container
+
+	if ( $enable_load_more ) {
+		echo '<div class="rps-load-more-wrapper" data-current-page="1" data-post-type="' . esc_attr( $post_type ) . '" data-posts-per-page="' . esc_attr( $posts_to_show ) . '">';
+		echo '<button class="rps-load-more-button">' . esc_html__( 'Load More', 'recent-posts-showcase' ) . '</button>';
+		echo '</div>';
+	}
+
+	// Enqueue JS only once (not inside render)
+	add_action(
+		'wp_footer',
+		function () {
+			?>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const wrapper = document.querySelector('.rps-load-more-wrapper');
+				if (!wrapper) return;
+
+				const btn = wrapper.querySelector('.rps-load-more-button');
+				const container = document.querySelector('.recent-posts-showcase');
+
+				btn.addEventListener('click', async () => {
+					let page = parseInt(wrapper.dataset.currentPage) + 1;
+					const postType = wrapper.dataset.postType;
+					const postsPerPage = wrapper.dataset.postsPerPage;
+
+					btn.textContent = 'Loading...';
+
+					const res = await fetch(`/wp-json/recent-posts-showcase/v1/load-more?post_type=${postType}&page=${page}&posts_per_page=${postsPerPage}`);
+					const data = await res.json();
+
+					if (data.html) {
+						container.insertAdjacentHTML('beforeend', data.html);
+						wrapper.dataset.currentPage = page;
+						btn.textContent = 'Load More';
+					}
+
+					if (!data.hasMore) {
+						btn.remove();
+					}
+				});
+			});
+		</script>
+			<?php
+		},
+		100
+	);
+
 	?>
 </p>
 <?php

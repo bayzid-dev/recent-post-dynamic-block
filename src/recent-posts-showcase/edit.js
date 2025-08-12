@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl, SelectControl, RangeControl } from '@wordpress/components';
-import ServerSideRender from '@wordpress/server-side-render';
+import { PanelBody, ToggleControl, SelectControl, RangeControl, FormTokenField } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -12,9 +11,12 @@ import 'swiper/css/pagination';
 
 const Edit = (props) => {
     const { attributes, setAttributes, name } = props;
+    // const { taxonomy, terms } = attributes;
 
     const {
         postType,
+        taxonomy,
+        terms,
         postsToShow,
         displayImage,
         displayExcerpt,
@@ -24,10 +26,34 @@ const Edit = (props) => {
         enableLoadMore
     } = attributes;
 
-    // Optional: Get available post types from the WordPress store
+    // Get available post types from the WordPress store
     const postTypes = useSelect((select) =>
         select('core').getPostTypes({ per_page: -1 }) || []
     );
+
+    // Fetch available taxonomies for this post type
+    const availableTaxonomies = [
+        { label: 'Category', value: 'category' },
+        { label: 'Tags', value: 'post_tag' },
+    ];
+
+    // Fetch all terms for selected taxonomy
+    const availableTerms = useSelect((select) => {
+     return taxonomy
+            ? select('core').getEntityRecords('taxonomy', taxonomy, { per_page: -1 })
+            : [];
+    }, [taxonomy]);
+
+    // Extract only term names.
+    const termNames = availableTerms ? availableTerms.map((term) => term.name) : [];
+
+    // Map selected term names to IDs
+    const updateTerms = (selectedNames) => {
+        const selectedIds = availableTerms
+            .filter((term) => selectedNames.includes(term.name))
+            .map((term) => term.id);
+        setAttributes({ terms: selectedIds });
+    };
 
     const postTypeOptions = postTypes
         .filter((type) => type.viewable)
@@ -36,12 +62,26 @@ const Edit = (props) => {
             value: type.slug,
         }));
 
+    const taxonomyParamMap = {
+        category: 'categories',
+        post_tag: 'tags',
+    };
+
     const posts = useSelect((select) => {
-        return select('core').getEntityRecords('postType', postType, {
+        if (!postType) return [];
+        const query = {
             per_page: postsToShow,
             _embed: true,
-        });
-    }, [postType, postsToShow]);
+        };
+
+        if (taxonomy && terms && terms.length > 0) {
+            const param = taxonomyParamMap[taxonomy] || taxonomy;
+            query[param] = terms;
+        }
+        return select('core').getEntityRecords('postType', postType, query);
+    }, [postType, postsToShow, taxonomy, terms]);
+
+
 
     return (
         <div {...useBlockProps()}>
@@ -54,6 +94,31 @@ const Edit = (props) => {
                         options={postTypeOptions}
                         onChange={(value) => setAttributes({ postType: value })}
                     />
+                    <PanelBody title={__('Filter Settings', 'recent-posts-showcase')}>
+                        <SelectControl
+                            label={__('Select Taxonomy', 'recent-posts-showcase')}
+                            value={taxonomy}
+                            options={availableTaxonomies}
+                            onChange={(value) => {
+                                setAttributes({ taxonomy: value, terms: [] });
+                            }}
+                        />
+
+                        {taxonomy && (
+                            <FormTokenField
+                                label={__('Select Terms', 'recent-posts-showcase')}
+                                value={
+                                    availableTerms
+                                        ? availableTerms
+                                            .filter((term) => terms.includes(term.id))
+                                            .map((term) => term.name)
+                                        : []
+                                }
+                                suggestions={termNames}
+                                onChange={updateTerms}
+                            />
+                        )}
+                    </PanelBody>
 
                     <RangeControl
                         label={__('Number of Posts', 'recent-posts-showcase')}

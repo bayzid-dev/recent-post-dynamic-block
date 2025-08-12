@@ -31,6 +31,16 @@ return array(
 				'type' => 'string',
 				'default' => 'post'
 			),
+			'taxonomy' => array(
+				'type' => 'string',
+				'default' => 'category'
+			),
+			'terms' => array(
+				'type' => 'array',
+				'default' => array(
+					
+				)
+			),
 			'postsToShow' => array(
 				'type' => 'number',
 				'default' => 5
