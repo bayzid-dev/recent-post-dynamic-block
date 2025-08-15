@@ -26,6 +26,14 @@
       "type": "string",
       "default": "post"
     },
+    "taxonomy": {
+      "type": "string",
+      "default": "category"
+    },
+    "terms": {
+      "type": "array",
+      "default": []
+    },
     "postsToShow": {
       "type": "number",
       "default": 5

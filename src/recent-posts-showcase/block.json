@@ -26,6 +26,27 @@
             "type": "string",
             "default": "post"
         },
+        //  "taxonomy": {
+        //     "type": "string",
+        //     "default": "category"
+        // },
+        // "terms": {
+        //     "type": "array",
+        //     "default": []
+        // },
+        "taxonomy": {
+            "type": "string",
+            "default": ""
+        },
+        "terms": {
+            "type": "array",
+            "items": {
+            "type": "number"
+            },
+            "default": []
+        },
+
+
         "postsToShow": {
             "type": "number",
             "default": 5
