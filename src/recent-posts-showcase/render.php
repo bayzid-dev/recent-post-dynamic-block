@@ -11,12 +11,12 @@
 	 * @param array $attributes Block attributes.
 	 * @return string Block HTML.
 	 */
+
 	// Set default attributes.
 	$post_type     = isset( $attributes['postType'] ) ? $attributes['postType'] : 'post';
 	$posts_to_show = isset( $attributes['postsToShow'] ) ? intval( $attributes['postsToShow'] ) : 5;
-
-	$taxonomy = ! empty( $attributes['taxonomy'] ) ? sanitize_text_field( $attributes['taxonomy'] ) : '';
-	$terms    = ! empty( $attributes['terms'] ) ? array_map( 'intval', $attributes['terms'] ) : array();
+	$taxonomy      = ! empty( $attributes['taxonomy'] ) ? sanitize_text_field( $attributes['taxonomy'] ) : '';
+	$terms         = ! empty( $attributes['terms'] ) ? array_map( 'intval', $attributes['terms'] ) : array();
 
 	$display_image   = ! empty( $attributes['displayImage'] );
 	$display_excerpt = ! empty( $attributes['displayExcerpt'] );
@@ -24,18 +24,14 @@
 	$display_date    = ! empty( $attributes['displayDate'] );
 	$layout          = isset( $attributes['layout'] ) ? $attributes['layout'] : 'grid';
 
-	// Build query arguments.
+	// Post type arguments.
 	$args = array(
 		'post_type'      => $post_type,
 		'posts_per_page' => $posts_to_show,
 		'post_status'    => 'publish',
 	);
 
-
-    var_dump( $attributes['taxonomy'] );
-    var_dump( $attributes['terms'] );
-
-    
+	// Add taxonomy query if taxonomy and terms are provided.
 	if ( $taxonomy && ! empty( $terms ) ) {
 		$args['tax_query'] = array(
 			array(
@@ -45,17 +41,6 @@
 			),
 		);
 	}
-
-	// Apply tax_query if categories are set.
-	// if ( ! empty( $categories ) && is_array( $categories ) ) {
-	// $args['tax_query'] = array(
-	// array(
-	// 'taxonomy' => 'category',
-	// 'field'    => 'term_id',
-	// 'terms'    => $categories,
-	// ),
-	// );
-	// }
 
 	$query = new WP_Query( $args );
 
@@ -107,7 +92,7 @@
 		}
 
 		echo '</div>';
-		if ( 'carousel' === $layout ) :
+		if ( 'carousel' === $layout ) {
 			?>
 			<div class="rps-swiper-pagination">
 			<div class="swiper-button-prev"></div>
@@ -115,14 +100,13 @@
 			<div class="swiper-pagination"></div>
 			</div> <!-- end swiper-container -->
 			<?php
-		endif;
+		}
 		echo 'carousel' === $layout ? '</div>' : '';
 
 		wp_reset_postdata();
 	} else {
 		echo '<p>' . esc_html__( 'No posts found.', 'recent-post-showcase' ) . '</p>';
 	}
-
 
 
 	$enable_load_more = isset( $attributes['enableLoadMore'] ) ? (bool) $attributes['enableLoadMore'] : false;
@@ -132,20 +116,17 @@
 		echo '</div>';
 	}
 
-	// Existing output above
+	echo '</div>'; // close post list container.
 
-	echo '</div>'; // close post list container
 
-	if ( $enable_load_more ) {
-		echo '<div class="rps-load-more-wrapper" data-current-page="1" data-post-type="' . esc_attr( $post_type ) . '" data-posts-per-page="' . esc_attr( $posts_to_show ) . '">';
-		echo '<button class="rps-load-more-button">' . esc_html__( 'Load More', 'recent-posts-showcase' ) . '</button>';
-		echo '</div>';
-	}
 
-	// Enqueue JS only once (not inside render)
+	// Enqueue JS only once (not inside render).
 	add_action(
 		'wp_footer',
 		function () {
+			$rest_url = esc_url_raw(
+				rest_url( 'recent-posts-showcase/v1/load-more' )
+			);
 			?>
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
@@ -154,6 +135,7 @@
 
 				const btn = wrapper.querySelector('.rps-load-more-button');
 				const container = document.querySelector('.recent-posts-showcase');
+						const restUrl = '<?php echo $rest_url; ?>';
 
 				btn.addEventListener('click', async () => {
 					let page = parseInt(wrapper.dataset.currentPage) + 1;
@@ -162,7 +144,16 @@
 
 					btn.textContent = 'Loading...';
 
-					const res = await fetch(`/wp-json/recent-posts-showcase/v1/load-more?post_type=${postType}&page=${page}&posts_per_page=${postsPerPage}`);
+					const res = await fetch(
+						`${restUrl}?post_type=${postType}&page=${page}&posts_per_page=${postsPerPage}`
+					);
+
+					if (!res.ok) {
+						console.error('Request failed:', res.status, await res.text());
+						btn.textContent = 'Error';
+						return;
+					}
+
 					const data = await res.json();
 
 					if (data.html) {
@@ -181,7 +172,6 @@
 		},
 		100
 	);
-
 	?>
-</p>
+	</p>
 <?php

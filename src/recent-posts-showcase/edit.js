@@ -11,7 +11,6 @@ import 'swiper/css/pagination';
 
 const Edit = (props) => {
     const { attributes, setAttributes, name } = props;
-    // const { taxonomy, terms } = attributes;
 
     const {
         postType,
@@ -82,10 +81,8 @@ const Edit = (props) => {
     }, [postType, postsToShow, taxonomy, terms]);
 
 
-
     return (
         <div {...useBlockProps()}>
-
             <InspectorControls>
                 <PanelBody title={__('Post Settings', 'recent-posts-showcase')} initialOpen={true}>
                     <SelectControl
