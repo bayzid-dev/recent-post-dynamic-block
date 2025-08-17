@@ -11388,54 +11388,216 @@ __webpack_require__.r(__webpack_exports__);
   \**********************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/recent-posts-showcase","version":"0.1.0","title":"Recent Post Showcase","category":"widgets","icon":"smiley","description":"Example block scaffolded with Create Block tool.","example":{},"supports":{"html":false,"color":{"text":true,"background":true}},"textdomain":"team-member-profile","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","render":"file:./render.php","attributes":{"postType":{"type":"string","default":"post"},"taxonomy":{"type":"string","default":"category"},"terms":{"type":"array","default":[]},"postsToShow":{"type":"number","default":5},"categories":{"type":"array","default":[],"items":{"type":"number"}},"displayImage":{"type":"boolean","default":true},"displayExcerpt":{"type":"boolean","default":true},"displayAuthor":{"type":"boolean","default":false},"displayDate":{"type":"boolean","default":false},"layout":{"type":"string","default":"grid"},"pagination":{"type":"boolean","default":false},"className":{"type":"string"},"postsPerPage":{"type":"number","default":6},"enableLoadMore":{"type":"boolean","default":false}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/recent-posts-showcase","version":"0.1.0","title":"Recent Post Showcase","category":"widgets","icon":"smiley","description":"A block to showcase recent posts with various display options.","example":{},"supports":{"html":false,"color":{"text":true,"background":true}},"textdomain":"recent-posts-showcase","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","render":"file:../render.php","attributes":{"postType":{"type":"string","default":"post"},"taxonomy":{"type":"string","default":"category"},"terms":{"type":"array","default":[]},"postsToShow":{"type":"number","default":4},"layout":{"type":"string","default":"grid"},"displayImage":{"type":"boolean","default":true},"displayExcerpt":{"type":"boolean","default":true},"displayAuthor":{"type":"boolean","default":true},"displayDate":{"type":"boolean","default":true},"enableLoadMore":{"type":"boolean","default":false}}}');
 
 /***/ }),
 
-/***/ "./src/recent-posts-showcase/edit.js":
-/*!*******************************************!*\
-  !*** ./src/recent-posts-showcase/edit.js ***!
-  \*******************************************/
+/***/ "./src/recent-posts-showcase/components/PostItem.js":
+/*!**********************************************************!*\
+  !*** ./src/recent-posts-showcase/components/PostItem.js ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var swiper_modules__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! swiper/modules */ "./node_modules/swiper/modules/index.mjs");
-/* harmony import */ var swiper_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! swiper/react */ "./node_modules/swiper/swiper-react.mjs");
-/* harmony import */ var swiper_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! swiper/css */ "./node_modules/swiper/swiper.css");
-/* harmony import */ var swiper_css_navigation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! swiper/css/navigation */ "./node_modules/swiper/modules/navigation.css");
-/* harmony import */ var swiper_css_pagination__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! swiper/css/pagination */ "./node_modules/swiper/modules/pagination.css");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _PostMeta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PostMeta */ "./src/recent-posts-showcase/components/PostMeta.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const PostItem = ({
+  post,
+  displayImage,
+  displayAuthor,
+  displayDate,
+  displayExcerpt
+}) => {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "recent-post-item",
+    children: [displayImage && post._embedded?.['wp:featuredmedia']?.[0]?.source_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+      src: post._embedded['wp:featuredmedia'][0].source_url,
+      alt: post.title.rendered
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "rps-content-wrapper",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
+        className: "recent-post-title",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+          href: post.link,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          children: post.title.rendered
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_PostMeta__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        author: post._embedded?.author?.[0]?.name,
+        date: post.date,
+        displayAuthor: displayAuthor,
+        displayDate: displayDate
+      }), displayExcerpt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "recent-post-excerpt",
+        dangerouslySetInnerHTML: {
+          __html: post.excerpt?.rendered
+        }
+      })]
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PostItem);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/components/PostMeta.js":
+/*!**********************************************************!*\
+  !*** ./src/recent-posts-showcase/components/PostMeta.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _constants_formatDate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/formatDate */ "./src/recent-posts-showcase/constants/formatDate.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const PostMeta = ({
+  author,
+  date,
+  displayAuthor,
+  displayDate
+}) => {
+  if (!displayAuthor && !displayDate) return null;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "recent-post-meta",
+    children: [displayAuthor && author && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("span", {
+      className: "post-author",
+      children: [author, " "]
+    }), displayDate && date && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+      className: "post-date",
+      children: (0,_constants_formatDate__WEBPACK_IMPORTED_MODULE_1__.formatDate)(date)
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PostMeta);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/constants/formatDate.js":
+/*!***********************************************************!*\
+  !*** ./src/recent-posts-showcase/constants/formatDate.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   formatDate: () => (/* binding */ formatDate)
+/* harmony export */ });
+const formatDate = dateString => {
+  return new Date(dateString).toLocaleDateString();
+};
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/constants/layouts.js":
+/*!********************************************************!*\
+  !*** ./src/recent-posts-showcase/constants/layouts.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   LAYOUT_OPTIONS: () => (/* binding */ LAYOUT_OPTIONS)
+/* harmony export */ });
+const LAYOUT_OPTIONS = [{
+  label: 'Grid',
+  value: 'grid'
+}, {
+  label: 'List',
+  value: 'list'
+}, {
+  label: 'Carousel',
+  value: 'carousel'
+}];
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/constants/taxonomies.js":
+/*!***********************************************************!*\
+  !*** ./src/recent-posts-showcase/constants/taxonomies.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AVAILABLE_TAXONOMIES: () => (/* binding */ AVAILABLE_TAXONOMIES),
+/* harmony export */   TAXONOMY_PARAM_MAP: () => (/* binding */ TAXONOMY_PARAM_MAP)
+/* harmony export */ });
+const AVAILABLE_TAXONOMIES = [{
+  label: 'Category',
+  value: 'category'
+}, {
+  label: 'Tags',
+  value: 'post_tag'
+}];
+const TAXONOMY_PARAM_MAP = {
+  category: 'categories',
+  post_tag: 'tags'
+};
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/edit/Edit.js":
+/*!************************************************!*\
+  !*** ./src/recent-posts-showcase/edit/Edit.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _hooks_usePostTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/usePostTypes */ "./src/recent-posts-showcase/hooks/usePostTypes.js");
+/* harmony import */ var _hooks_useTerms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../hooks/useTerms */ "./src/recent-posts-showcase/hooks/useTerms.js");
+/* harmony import */ var _hooks_usePosts__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/usePosts */ "./src/recent-posts-showcase/hooks/usePosts.js");
+/* harmony import */ var _controls_PostSettingsPanel__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./controls/PostSettingsPanel */ "./src/recent-posts-showcase/edit/controls/PostSettingsPanel.js");
+/* harmony import */ var _controls_FilterSettingsPanel__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./controls/FilterSettingsPanel */ "./src/recent-posts-showcase/edit/controls/FilterSettingsPanel.js");
+/* harmony import */ var _controls_DisplaySettingsPanel__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./controls/DisplaySettingsPanel */ "./src/recent-posts-showcase/edit/controls/DisplaySettingsPanel.js");
+/* harmony import */ var _layouts_GridLayout__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./layouts/GridLayout */ "./src/recent-posts-showcase/edit/layouts/GridLayout.js");
+/* harmony import */ var _layouts_ListLayout__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./layouts/ListLayout */ "./src/recent-posts-showcase/edit/layouts/ListLayout.js");
+/* harmony import */ var _layouts_CarouselLayout__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./layouts/CarouselLayout */ "./src/recent-posts-showcase/edit/layouts/CarouselLayout.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__);
 
 
 
 
 
 
-// Import Swiper styles
 
 
 
 
-const Edit = props => {
-  const {
-    attributes,
-    setAttributes,
-    name
-  } = props;
-  // const { taxonomy, terms } = attributes;
 
+
+
+const Edit = ({
+  attributes,
+  setAttributes
+}) => {
   const {
     postType,
     taxonomy,
@@ -11448,33 +11610,10 @@ const Edit = props => {
     layout,
     enableLoadMore
   } = attributes;
-
-  // Get available post types from the WordPress store
-  const postTypes = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => select('core').getPostTypes({
-    per_page: -1
-  }) || []);
-
-  // Fetch available taxonomies for this post type
-  const availableTaxonomies = [{
-    label: 'Category',
-    value: 'category'
-  }, {
-    label: 'Tags',
-    value: 'post_tag'
-  }];
-
-  // Fetch all terms for selected taxonomy
-  const availableTerms = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    return taxonomy ? select('core').getEntityRecords('taxonomy', taxonomy, {
-      per_page: -1
-    }) : [];
-  }, [taxonomy]);
-  console.log(availableTerms);
-
-  // Extract only term names.
+  const postTypes = (0,_hooks_usePostTypes__WEBPACK_IMPORTED_MODULE_3__.usePostTypes)();
+  const availableTerms = (0,_hooks_useTerms__WEBPACK_IMPORTED_MODULE_4__.useTerms)(taxonomy);
+  const posts = (0,_hooks_usePosts__WEBPACK_IMPORTED_MODULE_5__.usePosts)(postType, postsToShow, taxonomy, terms);
   const termNames = availableTerms ? availableTerms.map(term => term.name) : [];
-
-  // Map selected term names to IDs
   const updateTerms = selectedNames => {
     const selectedIds = availableTerms.filter(term => selectedNames.includes(term.name)).map(term => term.id);
     setAttributes({
@@ -11485,237 +11624,428 @@ const Edit = props => {
     label: type.labels.singular_name,
     value: type.slug
   }));
-  const taxonomyParamMap = {
-    category: 'categories',
-    post_tag: 'tags'
-  };
-  const posts = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+    ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)(),
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_controls_PostSettingsPanel__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        postType: postType,
+        postTypeOptions: postTypeOptions,
+        setAttributes: setAttributes,
+        postsToShow: postsToShow,
+        layout: layout
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_controls_FilterSettingsPanel__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        taxonomy: taxonomy,
+        setAttributes: setAttributes,
+        availableTerms: availableTerms,
+        terms: terms,
+        updateTerms: updateTerms,
+        termNames: termNames
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_controls_DisplaySettingsPanel__WEBPACK_IMPORTED_MODULE_8__["default"], {
+        displayImage: displayImage,
+        displayExcerpt: displayExcerpt,
+        displayAuthor: displayAuthor,
+        displayDate: displayDate,
+        enableLoadMore: enableLoadMore,
+        setAttributes: setAttributes
+      })]
+    }), !posts ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("p", {
+      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading...', 'recent-posts-showcase')
+    }) : posts.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("p", {
+      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No posts found.', 'recent-posts-showcase')
+    }) : layout === 'grid' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_layouts_GridLayout__WEBPACK_IMPORTED_MODULE_9__["default"], {
+      posts: posts,
+      displayImage: displayImage,
+      displayAuthor: displayAuthor,
+      displayDate: displayDate,
+      displayExcerpt: displayExcerpt
+    }) : layout === 'list' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_layouts_ListLayout__WEBPACK_IMPORTED_MODULE_10__["default"], {
+      posts: posts,
+      displayImage: displayImage,
+      displayAuthor: displayAuthor,
+      displayDate: displayDate,
+      displayExcerpt: displayExcerpt
+    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_layouts_CarouselLayout__WEBPACK_IMPORTED_MODULE_11__["default"], {
+      posts: posts,
+      displayImage: displayImage,
+      displayAuthor: displayAuthor,
+      displayDate: displayDate,
+      displayExcerpt: displayExcerpt
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/edit/controls/DisplaySettingsPanel.js":
+/*!*************************************************************************!*\
+  !*** ./src/recent-posts-showcase/edit/controls/DisplaySettingsPanel.js ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+const DisplaySettingsPanel = ({
+  displayImage,
+  displayExcerpt,
+  displayAuthor,
+  displayDate,
+  enableLoadMore,
+  setAttributes
+}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Featured Image', 'recent-posts-showcase'),
+    checked: displayImage,
+    onChange: () => setAttributes({
+      displayImage: !displayImage
+    })
+  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Excerpt', 'recent-posts-showcase'),
+    checked: displayExcerpt,
+    onChange: () => setAttributes({
+      displayExcerpt: !displayExcerpt
+    })
+  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Author', 'recent-posts-showcase'),
+    checked: displayAuthor,
+    onChange: () => setAttributes({
+      displayAuthor: !displayAuthor
+    })
+  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show Date', 'recent-posts-showcase'),
+    checked: displayDate,
+    onChange: () => setAttributes({
+      displayDate: !displayDate
+    })
+  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enable Load More', 'recent-posts-showcase'),
+    checked: enableLoadMore,
+    onChange: () => setAttributes({
+      enableLoadMore: !enableLoadMore
+    })
+  })]
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DisplaySettingsPanel);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/edit/controls/FilterSettingsPanel.js":
+/*!************************************************************************!*\
+  !*** ./src/recent-posts-showcase/edit/controls/FilterSettingsPanel.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _constants_taxonomies__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../constants/taxonomies */ "./src/recent-posts-showcase/constants/taxonomies.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+const FilterSettingsPanel = ({
+  taxonomy,
+  setAttributes,
+  availableTerms,
+  terms,
+  updateTerms,
+  termNames
+}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Filter Settings', 'recent-posts-showcase'),
+  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Select Taxonomy', 'recent-posts-showcase'),
+    value: taxonomy,
+    options: _constants_taxonomies__WEBPACK_IMPORTED_MODULE_3__.AVAILABLE_TAXONOMIES,
+    onChange: value => {
+      setAttributes({
+        taxonomy: value,
+        terms: []
+      });
+    }
+  }), taxonomy && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.FormTokenField, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Select Terms', 'recent-posts-showcase'),
+    value: availableTerms ? availableTerms.filter(term => terms.includes(term.id)).map(term => term.name) : [],
+    suggestions: termNames,
+    onChange: updateTerms
+  })]
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FilterSettingsPanel);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/edit/controls/PostSettingsPanel.js":
+/*!**********************************************************************!*\
+  !*** ./src/recent-posts-showcase/edit/controls/PostSettingsPanel.js ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _constants_layouts__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../constants/layouts */ "./src/recent-posts-showcase/constants/layouts.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+const PostSettingsPanel = ({
+  postType,
+  postTypeOptions,
+  setAttributes,
+  postsToShow,
+  layout
+}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Post Settings', 'recent-posts-showcase'),
+  initialOpen: true,
+  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Post Type', 'recent-posts-showcase'),
+    value: postType,
+    options: postTypeOptions,
+    onChange: value => setAttributes({
+      postType: value
+    })
+  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.RangeControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Number of Posts', 'recent-posts-showcase'),
+    value: postsToShow,
+    onChange: value => setAttributes({
+      postsToShow: value
+    }),
+    min: 1,
+    max: 20
+  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Layout', 'recent-posts-showcase'),
+    value: layout,
+    options: _constants_layouts__WEBPACK_IMPORTED_MODULE_3__.LAYOUT_OPTIONS,
+    onChange: value => setAttributes({
+      layout: value
+    })
+  })]
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PostSettingsPanel);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/edit/layouts/CarouselLayout.js":
+/*!******************************************************************!*\
+  !*** ./src/recent-posts-showcase/edit/layouts/CarouselLayout.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var swiper_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! swiper/react */ "./node_modules/swiper/swiper-react.mjs");
+/* harmony import */ var swiper_modules__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! swiper/modules */ "./node_modules/swiper/modules/index.mjs");
+/* harmony import */ var _components_PostItem__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/PostItem */ "./src/recent-posts-showcase/components/PostItem.js");
+/* harmony import */ var swiper_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! swiper/css */ "./node_modules/swiper/swiper.css");
+/* harmony import */ var swiper_css_navigation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! swiper/css/navigation */ "./node_modules/swiper/modules/navigation.css");
+/* harmony import */ var swiper_css_pagination__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! swiper/css/pagination */ "./node_modules/swiper/modules/pagination.css");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
+
+
+
+
+
+
+
+
+const CarouselLayout = ({
+  posts,
+  ...props
+}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_1__.Swiper, {
+  modules: [swiper_modules__WEBPACK_IMPORTED_MODULE_2__.Navigation, swiper_modules__WEBPACK_IMPORTED_MODULE_2__.Pagination],
+  spaceBetween: 10,
+  slidesPerView: 3,
+  navigation: true,
+  pagination: {
+    clickable: true
+  },
+  className: "recent-posts-showcase",
+  children: posts.map(post => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_1__.SwiperSlide, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_PostItem__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      post: post,
+      ...props
+    })
+  }, post.id))
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CarouselLayout);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/edit/layouts/GridLayout.js":
+/*!**************************************************************!*\
+  !*** ./src/recent-posts-showcase/edit/layouts/GridLayout.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_PostItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/PostItem */ "./src/recent-posts-showcase/components/PostItem.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const GridLayout = ({
+  posts,
+  ...props
+}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+  className: "recent-posts-showcase grid",
+  children: posts.map(post => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_components_PostItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    post: post,
+    ...props
+  }, post.id))
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GridLayout);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/edit/layouts/ListLayout.js":
+/*!**************************************************************!*\
+  !*** ./src/recent-posts-showcase/edit/layouts/ListLayout.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_PostItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/PostItem */ "./src/recent-posts-showcase/components/PostItem.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const ListLayout = ({
+  posts,
+  ...props
+}) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+  className: "recent-posts-showcase list",
+  children: posts.map(post => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_components_PostItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    post: post,
+    ...props
+  }, post.id))
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ListLayout);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/hooks/usePostTypes.js":
+/*!*********************************************************!*\
+  !*** ./src/recent-posts-showcase/hooks/usePostTypes.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   usePostTypes: () => (/* binding */ usePostTypes)
+/* harmony export */ });
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+
+const usePostTypes = () => {
+  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => select('core').getPostTypes({
+    per_page: -1
+  }) || []);
+};
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/hooks/usePosts.js":
+/*!*****************************************************!*\
+  !*** ./src/recent-posts-showcase/hooks/usePosts.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   usePosts: () => (/* binding */ usePosts)
+/* harmony export */ });
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _constants_taxonomies__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/taxonomies */ "./src/recent-posts-showcase/constants/taxonomies.js");
+
+
+const usePosts = (postType, postsToShow, taxonomy, terms) => {
+  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     if (!postType) return [];
     const query = {
       per_page: postsToShow,
       _embed: true
     };
-    if (taxonomy && terms && terms.length > 0) {
-      const param = taxonomyParamMap[taxonomy] || taxonomy;
+    if (taxonomy && terms?.length) {
+      const param = _constants_taxonomies__WEBPACK_IMPORTED_MODULE_1__.TAXONOMY_PARAM_MAP[taxonomy] || taxonomy;
       query[param] = terms;
     }
     return select('core').getEntityRecords('postType', postType, query);
   }, [postType, postsToShow, taxonomy, terms]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-    ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Settings', 'recent-posts-showcase'),
-        initialOpen: true,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Type', 'recent-posts-showcase'),
-          value: postType,
-          options: postTypeOptions,
-          onChange: value => setAttributes({
-            postType: value
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-          title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter Settings', 'recent-posts-showcase'),
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Taxonomy', 'recent-posts-showcase'),
-            value: taxonomy,
-            options: availableTaxonomies,
-            onChange: value => {
-              setAttributes({
-                taxonomy: value,
-                terms: []
-              });
-            }
-          }), taxonomy && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FormTokenField, {
-            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select Terms', 'recent-posts-showcase'),
-            value: availableTerms ? availableTerms.filter(term => terms.includes(term.id)).map(term => term.name) : [],
-            suggestions: termNames,
-            onChange: updateTerms
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Number of Posts', 'recent-posts-showcase'),
-          value: postsToShow,
-          onChange: value => setAttributes({
-            postsToShow: value
-          }),
-          min: 1,
-          max: 20
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Layout', 'recent-posts-showcase'),
-          value: layout,
-          options: [{
-            label: 'Grid',
-            value: 'grid'
-          }, {
-            label: 'List',
-            value: 'list'
-          }, {
-            label: 'Carousel',
-            value: 'carousel'
-          }],
-          onChange: value => setAttributes({
-            layout: value
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Featured Image', 'recent-posts-showcase'),
-          checked: displayImage,
-          onChange: () => setAttributes({
-            displayImage: !displayImage
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Excerpt', 'recent-posts-showcase'),
-          checked: displayExcerpt,
-          onChange: () => setAttributes({
-            displayExcerpt: !displayExcerpt
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Author', 'recent-posts-showcase'),
-          checked: displayAuthor,
-          onChange: () => setAttributes({
-            displayAuthor: !displayAuthor
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show Date', 'recent-posts-showcase'),
-          checked: displayDate,
-          onChange: () => setAttributes({
-            displayDate: !displayDate
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enable Load More', 'recent-posts-showcase'),
-          checked: enableLoadMore,
-          onChange: () => setAttributes({
-            enableLoadMore: !enableLoadMore
-          })
-        })]
-      })
-    }), !posts ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
-      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading...', 'recent-posts-showcase')
-    }) : posts.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
-      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No posts found.', 'recent-posts-showcase')
-    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-      children: [layout === 'grid' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-        className: "recent-posts-showcase grid",
-        children: posts.map(post => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-          className: "recent-post-item",
-          children: [displayImage && post._embedded?.['wp:featuredmedia']?.[0]?.source_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("img", {
-            src: post._embedded['wp:featuredmedia'][0].source_url,
-            alt: post.title.rendered
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-            className: "rps-content-wrapper",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("h3", {
-              className: "recent-post-title",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
-                href: post.link,
-                target: "_blank",
-                rel: "noopener noreferrer",
-                children: post.title.rendered
-              })
-            }), (displayAuthor || displayDate) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-              className: "recent-post-meta",
-              children: [displayAuthor && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
-                className: "post-author",
-                children: post._embedded?.author?.[0]?.name + ' '
-              }), displayDate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
-                className: "post-date",
-                children: new Date(post.date).toLocaleDateString()
-              })]
-            }), displayExcerpt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-              className: "recent-post-excerpt",
-              dangerouslySetInnerHTML: {
-                __html: post.excerpt?.rendered
-              }
-            })]
-          })]
-        }, post.id))
-      }), layout === 'list' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-        className: "recent-posts-showcase list",
-        children: posts.map(post => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-          className: "recent-post-item",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-            className: "rps-thumbnail-wrapper",
-            children: displayImage && post._embedded?.['wp:featuredmedia']?.[0]?.source_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("img", {
-              src: post._embedded['wp:featuredmedia'][0].source_url,
-              alt: post.title.rendered
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-            className: "rps-content-wrapper",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("h3", {
-              className: "recent-post-title",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
-                href: post.link,
-                target: "_blank",
-                rel: "noopener noreferrer",
-                children: post.title.rendered
-              })
-            }), (displayAuthor || displayDate) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-              className: "recent-post-meta",
-              children: [displayAuthor && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
-                className: "post-author",
-                children: post._embedded?.author?.[0]?.name + ' '
-              }), displayDate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
-                className: "post-date",
-                children: new Date(post.date).toLocaleDateString()
-              })]
-            }), displayExcerpt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-              className: "recent-post-excerpt",
-              dangerouslySetInnerHTML: {
-                __html: post.excerpt?.rendered
-              }
-            })]
-          })]
-        }, post.id))
-      }), layout === 'carousel' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(swiper_react__WEBPACK_IMPORTED_MODULE_5__.Swiper, {
-        modules: [swiper_modules__WEBPACK_IMPORTED_MODULE_4__.Navigation, swiper_modules__WEBPACK_IMPORTED_MODULE_4__.Pagination],
-        spaceBetween: 10,
-        slidesPerView: 3,
-        navigation: true,
-        pagination: {
-          clickable: true
-        },
-        className: "recent-posts-showcase",
-        children: posts.map(post => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(swiper_react__WEBPACK_IMPORTED_MODULE_5__.SwiperSlide, {
-          className: "recent-post-item",
-          children: [displayImage && post._embedded?.['wp:featuredmedia']?.[0]?.source_url && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-            className: "rps-thumbnail-wrapper",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-              className: "recent-post-thumbnail",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("img", {
-                src: post._embedded['wp:featuredmedia'][0].source_url,
-                alt: post.title.rendered
-              })
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-            className: "rps-content-wrapper",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("h3", {
-              className: "recent-post-title",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
-                href: post.link,
-                target: "_blank",
-                rel: "noopener noreferrer",
-                children: post.title.rendered
-              })
-            }), (displayAuthor || displayDate) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
-              className: "recent-post-meta",
-              children: [displayAuthor && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
-                className: "post-author",
-                children: post._embedded?.author?.[0]?.name + ' '
-              }), displayDate && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
-                className: "post-date",
-                children: new Date(post.date).toLocaleDateString()
-              })]
-            }), displayExcerpt && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
-              className: "recent-post-excerpt",
-              dangerouslySetInnerHTML: {
-                __html: post.excerpt?.rendered
-              }
-            })]
-          })]
-        }, post.id))
-      })]
-    })]
-  });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
+
+/***/ }),
+
+/***/ "./src/recent-posts-showcase/hooks/useTerms.js":
+/*!*****************************************************!*\
+  !*** ./src/recent-posts-showcase/hooks/useTerms.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useTerms: () => (/* binding */ useTerms)
+/* harmony export */ });
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+
+const useTerms = taxonomy => {
+  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
+    return taxonomy ? select('core').getEntityRecords('taxonomy', taxonomy, {
+      per_page: -1
+    }) : [];
+  }, [taxonomy]);
+};
 
 /***/ }),
 
@@ -11729,7 +12059,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/recent-posts-showcase/style.scss");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/recent-posts-showcase/edit.js");
+/* harmony import */ var _edit_Edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit/Edit */ "./src/recent-posts-showcase/edit/Edit.js");
 /* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/recent-posts-showcase/block.json");
 /**
  * Registers a new block provided a unique name and an object defining its behavior.
@@ -11762,7 +12092,7 @@ __webpack_require__.r(__webpack_exports__);
   /**
    * @see ./edit.js
    */
-  edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"]
+  edit: _edit_Edit__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
 
 /***/ }),

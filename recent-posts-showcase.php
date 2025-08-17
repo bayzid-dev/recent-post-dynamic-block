@@ -4,8 +4,8 @@
  * Description:       A dynamic block to showcase recent posts with different layouts and styles.
  * Version:           1.0.0
  * Requires at least: 6.7
- * Requires PHP:      7.4
- * Author:            The WordPress Contributors
+ * Requires PHP:      7.2
+ * Author:            bayzidmiah
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       recent-posts-showcase
@@ -79,7 +79,7 @@ add_action(
 			array(
 				'methods'             => 'GET',
 				'callback'            => 'recent_posts_showcase_load_more',
-				'permission_callback' => '__return_true', // public
+				'permission_callback' => '__return_true',
 				'args'                => array(
 					'post_type'      => array(
 						'required'          => true,
@@ -127,7 +127,7 @@ function recent_posts_showcase_load_more( $request ) {
 	$layout          = isset( $request['layout'] ) ? $request['layout'] : 'grid';
 
 
-	// Build WP_Query args
+	// Build WP_Query args.
 	$args = array(
 		'post_type'      => $post_type,
 		'posts_per_page' => $posts_per_page,

@@ -6,7 +6,7 @@
   "title": "Recent Post Showcase",
   "category": "widgets",
   "icon": "smiley",
-  "description": "Example block scaffolded with Create Block tool.",
+  "description": "A block to showcase recent posts with various display options.",
   "example": {},
   "supports": {
     "html": false,
@@ -15,12 +15,12 @@
       "background": true
     }
   },
-  "textdomain": "team-member-profile",
+  "textdomain": "recent-posts-showcase",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
   "style": "file:./style-index.css",
   "viewScript": "file:./view.js",
-  "render": "file:./render.php",
+  "render": "file:../render.php",
   "attributes": {
     "postType": {
       "type": "string",
@@ -36,14 +36,11 @@
     },
     "postsToShow": {
       "type": "number",
-      "default": 5
+      "default": 4
     },
-    "categories": {
-      "type": "array",
-      "default": [],
-      "items": {
-        "type": "number"
-      }
+    "layout": {
+      "type": "string",
+      "default": "grid"
     },
     "displayImage": {
       "type": "boolean",
@@ -55,26 +52,11 @@
     },
     "displayAuthor": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "displayDate": {
       "type": "boolean",
-      "default": false
-    },
-    "layout": {
-      "type": "string",
-      "default": "grid"
-    },
-    "pagination": {
-      "type": "boolean",
-      "default": false
-    },
-    "className": {
-      "type": "string"
-    },
-    "postsPerPage": {
-      "type": "number",
-      "default": 6
+      "default": true
     },
     "enableLoadMore": {
       "type": "boolean",
