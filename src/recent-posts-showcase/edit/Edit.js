@@ -10,6 +10,7 @@ import DisplaySettingsPanel from './controls/DisplaySettingsPanel';
 import GridLayout from './layouts/GridLayout';
 import ListLayout from './layouts/ListLayout';
 import CarouselLayout from './layouts/CarouselLayout';
+import './editor.scss'; // editor styles.
 
 const Edit = ({ attributes, setAttributes }) => {
     const { postType, taxonomy, terms, postsToShow, displayImage, displayExcerpt, displayAuthor, displayDate, layout, enableLoadMore } = attributes;
@@ -37,29 +38,31 @@ const Edit = ({ attributes, setAttributes }) => {
     return (
         <div {...useBlockProps()}>
             <InspectorControls>
-                <PostSettingsPanel
-                    postType={postType}
-                    postTypeOptions={postTypeOptions}
-                    setAttributes={setAttributes}
-                    postsToShow={postsToShow}
-                    layout={layout}
-                />
-                <FilterSettingsPanel
-                    taxonomy={taxonomy}
-                    setAttributes={setAttributes}
-                    availableTerms={availableTerms}
-                    terms={terms}
-                    updateTerms={updateTerms}
-                    termNames={termNames}
-                />
-                <DisplaySettingsPanel
-                    displayImage={displayImage}
-                    displayExcerpt={displayExcerpt}
-                    displayAuthor={displayAuthor}
-                    displayDate={displayDate}
-                    enableLoadMore={enableLoadMore}
-                    setAttributes={setAttributes}
-                />
+                <div className="recent-posts-showcase-inspector">
+                    <PostSettingsPanel
+                        postType={postType}
+                        postTypeOptions={postTypeOptions}
+                        setAttributes={setAttributes}
+                        postsToShow={postsToShow}
+                        layout={layout}
+                    />
+                    <FilterSettingsPanel
+                        taxonomy={taxonomy}
+                        setAttributes={setAttributes}
+                        availableTerms={availableTerms}
+                        terms={terms}
+                        updateTerms={updateTerms}
+                        termNames={termNames}
+                    />
+                    <DisplaySettingsPanel
+                        displayImage={displayImage}
+                        displayExcerpt={displayExcerpt}
+                        displayAuthor={displayAuthor}
+                        displayDate={displayDate}
+                        enableLoadMore={enableLoadMore}
+                        setAttributes={setAttributes}
+                    />
+                </div>
             </InspectorControls>
 
             {!posts ? (

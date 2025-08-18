@@ -1,0 +1,30 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+
+/* ===========================
+   Editor Sidebar Panel Styles
+=========================== */
+.recent-posts-showcase-inspector{
+    // .components-base-control.components-toggle-control {
+    //     padding: 0 20px;
+    // }
+    .components-panel__body.is-opened>.components-panel__body-title {
+        background: #f0f0f0;
+        border: none;
+    }
+    .recent-posts-showcase-display-settings {
+        .components-toggle-control.components-base-control {
+            margin-top: 20px;
+            margin-bottom: 14px;
+        }
+        .components-toggle-control__label {
+            font-weight: 500;
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.733);
+        }
+    }
+}

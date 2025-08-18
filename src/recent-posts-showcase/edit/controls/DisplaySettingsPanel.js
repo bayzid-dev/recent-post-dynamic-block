@@ -1,9 +1,9 @@
 import React from 'react';
-import { ToggleControl } from '@wordpress/components';
+import { PanelBody, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 const DisplaySettingsPanel = ({ displayImage, displayExcerpt, displayAuthor, displayDate, enableLoadMore, setAttributes }) => (
-    <>
+     <PanelBody title={__('Display Settings', 'recent-posts-showcase')} className="recent-posts-showcase-display-settings">
         <ToggleControl
             label={__('Show Featured Image', 'recent-posts-showcase')}
             checked={displayImage}
@@ -29,7 +29,8 @@ const DisplaySettingsPanel = ({ displayImage, displayExcerpt, displayAuthor, dis
             checked={enableLoadMore}
             onChange={() => setAttributes({ enableLoadMore: !enableLoadMore })}
         />
-    </>
+        </PanelBody>
+   
 );
 
 export default DisplaySettingsPanel;

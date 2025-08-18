@@ -24,7 +24,6 @@ return array(
 		'editorScript' => 'file:./index.js',
 		'editorStyle' => 'file:./index.css',
 		'style' => 'file:./style-index.css',
-		'viewScript' => 'file:./view.js',
 		'render' => 'file:../render.php',
 		'attributes' => array(
 			'postType' => array(
@@ -43,7 +42,7 @@ return array(
 			),
 			'postsToShow' => array(
 				'type' => 'number',
-				'default' => 4
+				'default' => 6
 			),
 			'layout' => array(
 				'type' => 'string',

@@ -18,6 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Constants for paths.
+ */
+define( 'RPS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'RPS_PLUGIN_URL', plugin_dir_url( __FILE__ ) . 'src/recent-posts-showcase/' );
+
+/**
  * Registers the block using a `blocks-manifest.php` file, which improves the performance of block type registration.
  * Behind the scenes, it also registers all assets so they can be enqueued
  * through the block editor in the corresponding context.
@@ -66,10 +72,37 @@ function rps_enqueue_swiper_assets() {
 	// Only enqueue on frontend if needed.
 	wp_enqueue_style( 'swiper-css', plugins_url( 'node_modules/swiper/swiper-bundle.min.css', __FILE__ ) );
 	wp_enqueue_script( 'swiper-js', plugins_url( 'node_modules/swiper/swiper-bundle.min.js', __FILE__ ), array(), false, true );
+
+	// Enqueue custom JS for Swiper initialization on the frontend.
+	wp_enqueue_script(
+		'rps-swiper-init',
+		RPS_PLUGIN_URL . 'assets/swiper-init.js',
+		array( 'swiper-js' ),
+		false,
+		true
+	);
+
+	// Enqueue custom JS for Load More functionality on the frontend.
+	wp_enqueue_script(
+		'rps-load-more',
+		RPS_PLUGIN_URL . 'assets/load-more.js',
+		array(),
+		false,
+		true
+	);
+
+	// Localize data for the load-more script.
+	wp_localize_script(
+		'rps-load-more',
+		'recentPostsShowcaseLoadMore',
+		array(
+			'restUrl' => esc_url_raw( rest_url( 'recent-posts-showcase/v1/load-more' ) ),
+		)
+	);
 }
 add_action( 'wp_enqueue_scripts', 'rps_enqueue_swiper_assets' );
 
-// Hook into REST API initialization
+// Hook into REST API initialization.
 add_action(
 	'rest_api_init',
 	function () {
@@ -103,6 +136,26 @@ add_action(
 							return array_map( 'intval', (array) $value );
 						},
 					),
+					'displayImage'   => array(
+						'required'          => true,
+						'sanitize_callback' => 'rest_sanitize_boolean',
+					),
+					'displayExcerpt' => array(
+						'required'          => false,
+						'sanitize_callback' => 'rest_sanitize_boolean',
+					),
+					'displayAuthor'  => array(
+						'required'          => false,
+						'sanitize_callback' => 'rest_sanitize_boolean',
+					),
+					'displayDate'    => array(
+						'required'          => false,
+						'sanitize_callback' => 'rest_sanitize_boolean',
+					),
+					'layout'         => array(
+						'required'          => false,
+						'sanitize_callback' => 'sanitize_text_field',
+					),
 				),
 			)
 		);
@@ -111,23 +164,23 @@ add_action(
 
 /**
  * Callback for Load More.
+ *
+ * @param rest_request $request The REST request object.
+ * @return array The response containing HTML and hasMore flag.
  */
 function recent_posts_showcase_load_more( $request ) {
-	$post_type      = $request['post_type'];
-	$page           = max( 1, intval( $request['page'] ) );
-	$posts_per_page = max( 1, intval( $request['posts_per_page'] ) );
-	$taxonomy       = $request['taxonomy'] ?? '';
-	$terms          = $request['terms'] ?? array();
+	$post_type      = sanitize_text_field( $request['post_type'] );
+	$page           = max( 1, absint( $request['page'] ) );
+	$posts_per_page = max( 1, absint( $request['posts_per_page'] ) );
+	$taxonomy       = ! empty( $request['taxonomy'] ) ? sanitize_text_field( $request['taxonomy'] ) : '';
+	$terms          = ! empty( $request['terms'] ) ? array_map( 'intval', (array) $request['terms'] ) : array();
 
-    
-	$display_image   = ! empty( $request['displayImage'] );
-	$display_excerpt = ! empty( $request['displayExcerpt'] );
-	$display_author  = ! empty( $request['displayAuthor'] );
-	$display_date    = ! empty( $request['displayDate'] );
-	$layout          = isset( $request['layout'] ) ? $request['layout'] : 'grid';
+	$display_image   = rest_sanitize_boolean( $request['displayImage'] ?? false );
+	$display_excerpt = rest_sanitize_boolean( $request['displayExcerpt'] ?? false );
+	$display_author  = rest_sanitize_boolean( $request['displayAuthor'] ?? false );
+	$display_date    = rest_sanitize_boolean( $request['displayDate'] ?? false );
+	$layout          = sanitize_text_field( $request['layout'] ?? 'grid' );
 
-
-	// Build WP_Query args.
 	$args = array(
 		'post_type'      => $post_type,
 		'posts_per_page' => $posts_per_page,
@@ -135,7 +188,6 @@ function recent_posts_showcase_load_more( $request ) {
 		'post_status'    => 'publish',
 	);
 
-	// Taxonomy filtering
 	if ( $taxonomy && ! empty( $terms ) ) {
 		$args['tax_query'] = array(
 			array(
@@ -148,83 +200,43 @@ function recent_posts_showcase_load_more( $request ) {
 
 	$query = new WP_Query( $args );
 
-	// Render posts HTML (this must match your block's frontend markup).
 	ob_start();
 	if ( $query->have_posts() ) {
 		while ( $query->have_posts() ) {
-			$query->the_post(); 
-            echo '<div class="recent-post-item">';
-			echo '<div class="rps-thumbnail-wrapper">';
-			// if ( $display_image && has_post_thumbnail() ) {
+			$query->the_post();
+
+			echo '<div class="recent-post-item">';
+			if ( $display_image && has_post_thumbnail() ) {
 				echo '<div class="recent-post-thumbnail">';
 				the_post_thumbnail( 'medium' );
 				echo '</div>';
-			// }
-			echo '</div>';
-
+			}
 			echo '<div class="rps-content-wrapper">';
 			echo '<h3 class="recent-post-title"><a href="' . esc_url( get_permalink() ) . '">' . get_the_title() . '</a></h3>';
 
-			// if ( $display_author || $display_date ) {
+			if ( $display_author || $display_date ) {
 				echo '<div class="recent-post-meta">';
-				// if ( $display_author ) {
-					echo '<span class="post-author">' . esc_html( get_the_author() ) . '</span> ';
-				// }
-				// if ( $display_date ) {
+				if ( $display_author ) {
+					echo '<span class="post-author">' . esc_html( get_the_author() ) . '</span>';
+				}
+				if ( $display_date ) {
 					echo ' <span class="post-date">' . esc_html( get_the_date() ) . '</span>';
-				// }
+				}
 				echo '</div>';
-			// }
+			}
 
-			// if ( $display_excerpt ) {
-				echo '<div class="recent-post-excerpt">' . get_the_excerpt() . '</div>';
-			// }
-			echo '</div>';
-			echo '</div>';
-            
+			if ( $display_excerpt ) {
+				echo '<div class="recent-post-excerpt">' . wp_kses_post( get_the_excerpt() ) . '</div>';
+			}
+			echo '</div>'; // .rps-content-wrapper
+			echo '</div>'; // .recent-post-item
 		}
 		wp_reset_postdata();
 	}
 	$html = ob_get_clean();
 
-	// Check if there are more posts.
-	$has_more = ( $page < $query->max_num_pages );
-
 	return array(
 		'html'    => $html,
-		'hasMore' => $has_more,
+		'hasMore' => ( $page < $query->max_num_pages ),
 	);
 }
-
-/**
- * Initialize swiper in the frontend.
- */
-function rps_initialize_swiper() {
-	?>
-	<script>
-	document.addEventListener('DOMContentLoaded', function () {
-		if ( document.querySelector('.swiper-container') ) {
-			const swiper = new Swiper('.swiper-container', {
-				slidesPerView: 1,
-				spaceBetween: 20,
-				loop: true,
-				navigation: {
-					nextEl: '.swiper-button-next',
-					prevEl: '.swiper-button-prev',
-				},
-				pagination: {
-					el: '.swiper-pagination',
-					clickable: true,
-				},
-				breakpoints: {
-					640: { slidesPerView: 1 },
-					768: { slidesPerView: 3 },
-					1024: { slidesPerView: 4 },
-				},
-			});
-		}
-	});
-	</script>
-	<?php
-}
-add_action( 'wp_footer', 'rps_initialize_swiper' );
