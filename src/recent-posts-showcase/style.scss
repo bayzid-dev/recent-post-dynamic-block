@@ -6,77 +6,127 @@
  */
 
 .recent-posts-showcase {
-	display: grid;
-	gap: 1rem;
+    display: grid;
+    gap: 1rem;
 
-	.swiper-pagination {
-		position: relative;
-		margin-top: 20px;
-		display: block !important;
-		opacity: 1 !important;
-		text-align: center;
-	}
+    .swiper-pagination {
+        position: relative;
+        margin-top: 20px;
+        display: block !important;
+        opacity: 1 !important;
+        text-align: center;
+    }
 
-	.recent-post-item {
-		background: #fff;
-		border: 1px solid #e5e7eb;
-		border-radius: 0.5rem;
-		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-		padding: 1.25rem;
-		transition: box-shadow 0.3s;
+    .recent-post-item {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        padding: 1.25rem;
+        transition: box-shadow 0.3s;
 
-		.recent-post-thumbnail img {
-			width: 100%;
-			height: auto;
-			border-radius: 0.375rem;
-			margin-bottom: 1rem;
-		}
+        .recent-post-thumbnail img {
+            width: 100%;
+            height: auto;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
 
-		.recent-post-title {
-			font-size: 1.125rem;
-			font-weight: 600;
-			margin-bottom: 0.5rem;
+        .recent-post-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
 
-			a {
-				color: #2563eb;
-				text-decoration: none;
+            a {
+                color: #2563eb;
+                text-decoration: none;
 
-				&:hover {
-					text-decoration: underline;
-				}
-			}
-		}
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
 
-		.recent-post-meta {
-			font-size: 0.875rem;
-			color: #6b7280;
-			margin-bottom: 0.5rem;
-		}
+        .recent-post-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
 
-		.recent-post-excerpt {
-			font-size: 0.9375rem;
-			color: #374151;
-		}
-	}
+        .recent-post-excerpt {
+            font-size: 0.9375rem;
+            color: #374151;
+        }
+    }
 }
 
 .recent-posts-showcase.grid {
-	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+/* ===========================
+    Load More Button Styling
+=========================== */
+.rps-load-more-wrapper {
+    text-align: left;
+    margin-top: 2rem;
+}
+
+.rps-load-more-button {
+    background-color: #0073aa;
+    /* WP blue */
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rps-load-more-button:hover {
+    background-color: #005f8d;
+    transform: translateY(-2px);
+}
+
+.rps-load-more-button:active {
+    background-color: #004a6f;
+    transform: translateY(0);
+}
+
+/* ===========================
+    List View Styling
+=========================== */
 .recent-posts-showcase.list {
-	.recent-post-item {
-		display: flex;
-		gap: 2rem;
-	}
+    .recent-post-item {
+        display: flex;
+        gap: 2rem;
+    }
+}
+
+/* ===========================
+    Swiper Container Styling
+=========================== */
+.recent-posts-showcase.list {
+    .recent-post-item {
+        display: flex;
+        gap: 2rem;
+    }
 }
 
 .swiper-container {
-	position: relative;
-	overflow: hidden;
-	width: 100%;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
 
-	.rps-swiper-pagination{
-		margin-bottom: 20px;
-	}
+    .rps-swiper-pagination {
+        margin-bottom: 20px;
+    }
+
+  .swiper-button-next:after,
+    .swiper-button-prev:after { 
+        font-size: 28px;
+    }
+        
 }

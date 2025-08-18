@@ -1,9 +1,15 @@
 <?php
 /**
- * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
+ * Recent Posts Showcase Block Render Function
+ *
+ * @package recent-posts-showcase
  */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 ?>
-<p <?php echo get_block_wrapper_attributes(); ?>>
+<div <?php echo wp_kses_post( get_block_wrapper_attributes() ); ?>>
 	<?php
 	/**
 	 * Server-side rendering for the Recent Posts Showcase block
@@ -13,9 +19,9 @@
 	 */
 
 	// Set default attributes.
-	$post_type     = isset( $attributes['postType'] ) ? $attributes['postType'] : 'post';
-	$posts_to_show = isset( $attributes['postsToShow'] ) ? intval( $attributes['postsToShow'] ) : 5;
-	$taxonomy      = ! empty( $attributes['taxonomy'] ) ? sanitize_text_field( $attributes['taxonomy'] ) : '';
+	$rps_post_type = isset( $attributes['postType'] ) ? $attributes['postType'] : 'post';
+	$posts_to_show = isset( $attributes['postsToShow'] ) ? intval( $attributes['postsToShow'] ) : 6;
+	$rps_taxonomy  = ! empty( $attributes['taxonomy'] ) ? sanitize_text_field( $attributes['taxonomy'] ) : '';
 	$terms         = ! empty( $attributes['terms'] ) ? array_map( 'intval', $attributes['terms'] ) : array();
 
 	$display_image   = ! empty( $attributes['displayImage'] );
@@ -26,16 +32,16 @@
 
 	// Post type arguments.
 	$args = array(
-		'post_type'      => $post_type,
+		'post_type'      => $rps_post_type,
 		'posts_per_page' => $posts_to_show,
 		'post_status'    => 'publish',
 	);
 
 	// Add taxonomy query if taxonomy and terms are provided.
-	if ( $taxonomy && ! empty( $terms ) ) {
+	if ( $rps_taxonomy && ! empty( $terms ) ) {
 		$args['tax_query'] = array(
 			array(
-				'taxonomy' => $taxonomy,
+				'taxonomy' => $rps_taxonomy,
 				'field'    => 'term_id',
 				'terms'    => $terms,
 			),
@@ -55,7 +61,7 @@
 
 		echo 'carousel' === $layout ? '<div class="swiper-container">' : '';
 		$post_item = 'carousel' === $layout ? 'swiper-slide' : '';
-		echo '<div ' . get_block_wrapper_attributes( array( 'class' => 'recent-posts-showcase ' . $layout_class ) ) . '>';
+		echo '<div ' . wp_kses_post( get_block_wrapper_attributes( array( 'class' => 'recent-posts-showcase ' . $layout_class ) ) ) . '>';
 
 		while ( $query->have_posts() ) {
 			$query->the_post();
@@ -84,7 +90,7 @@
 			}
 
 			if ( $display_excerpt ) {
-				echo '<div class="recent-post-excerpt">' . get_the_excerpt() . '</div>';
+				echo '<div class="recent-post-excerpt">' . esc_html( get_the_excerpt() ) . '</div>';
 			}
 			echo '</div>';
 
@@ -108,70 +114,25 @@
 		echo '<p>' . esc_html__( 'No posts found.', 'recent-post-showcase' ) . '</p>';
 	}
 
-
 	$enable_load_more = isset( $attributes['enableLoadMore'] ) ? (bool) $attributes['enableLoadMore'] : false;
-	if ( $enable_load_more ) {
-		echo '<div class="rps-load-more-wrapper" data-current-page="1" data-post-type="' . esc_attr( $post_type ) . '" data-posts-per-page="' . esc_attr( $posts_to_show ) . '">';
-		echo '<button class="rps-load-more-button">' . esc_html__( 'Load More', 'recent-posts-showcase' ) . '</button>';
+	if ( 'carousel' !== $layout && $enable_load_more ) {
+		$selected_taxonomy = $attributes['taxonomy'] ?? '';
+		$selected_terms    = isset( $attributes['terms'] ) ? implode( ',', $attributes['terms'] ) : '';
+		echo '<div class="rps-load-more-wrapper"
+            data-current-page="1"
+            data-post-type="' . esc_attr( $rps_post_type ) . '"
+            data-posts-per-page="' . esc_attr( $posts_to_show ) . '"
+            data-display-image="' . ( ! empty( $attributes['displayImage'] ) ? 'true' : 'false' ) . '"
+            data-display-excerpt="' . ( ! empty( $attributes['displayExcerpt'] ) ? 'true' : 'false' ) . '"
+            data-display-author="' . ( ! empty( $attributes['displayAuthor'] ) ? 'true' : 'false' ) . '"
+            data-display-date="' . ( ! empty( $attributes['displayDate'] ) ? 'true' : 'false' ) . '"
+            data-taxonomy="' . esc_attr( $selected_taxonomy ) . '" 
+            data-terms="' . esc_attr( $selected_terms ) . '"
+            data-layout="' . esc_attr( $layout ) . '">';
+			echo '<button class="rps-load-more-button">' . esc_html__( 'Load More', 'recent-posts-showcase' ) . '</button>';
 		echo '</div>';
 	}
-
 	echo '</div>'; // close post list container.
-
-
-
-	// Enqueue JS only once (not inside render).
-	add_action(
-		'wp_footer',
-		function () {
-			$rest_url = esc_url_raw(
-				rest_url( 'recent-posts-showcase/v1/load-more' )
-			);
-			?>
-		<script>
-			document.addEventListener('DOMContentLoaded', () => {
-				const wrapper = document.querySelector('.rps-load-more-wrapper');
-				if (!wrapper) return;
-
-				const btn = wrapper.querySelector('.rps-load-more-button');
-				const container = document.querySelector('.recent-posts-showcase');
-						const restUrl = '<?php echo $rest_url; ?>';
-
-				btn.addEventListener('click', async () => {
-					let page = parseInt(wrapper.dataset.currentPage) + 1;
-					const postType = wrapper.dataset.postType;
-					const postsPerPage = wrapper.dataset.postsPerPage;
-
-					btn.textContent = 'Loading...';
-
-					const res = await fetch(
-						`${restUrl}?post_type=${postType}&page=${page}&posts_per_page=${postsPerPage}`
-					);
-
-					if (!res.ok) {
-						console.error('Request failed:', res.status, await res.text());
-						btn.textContent = 'Error';
-						return;
-					}
-
-					const data = await res.json();
-
-					if (data.html) {
-						container.insertAdjacentHTML('beforeend', data.html);
-						wrapper.dataset.currentPage = page;
-						btn.textContent = 'Load More';
-					}
-
-					if (!data.hasMore) {
-						btn.remove();
-					}
-				});
-			});
-		</script>
-			<?php
-		},
-		100
-	);
 	?>
-	</p>
+	</div>
 <?php

@@ -9,7 +9,7 @@ return array(
 		'title' => 'Recent Post Showcase',
 		'category' => 'widgets',
 		'icon' => 'smiley',
-		'description' => 'Example block scaffolded with Create Block tool.',
+		'description' => 'A block to showcase recent posts with various display options.',
 		'example' => array(
 			
 		),
@@ -20,12 +20,11 @@ return array(
 				'background' => true
 			)
 		),
-		'textdomain' => 'team-member-profile',
+		'textdomain' => 'recent-posts-showcase',
 		'editorScript' => 'file:./index.js',
 		'editorStyle' => 'file:./index.css',
 		'style' => 'file:./style-index.css',
-		'viewScript' => 'file:./view.js',
-		'render' => 'file:./render.php',
+		'render' => 'file:../render.php',
 		'attributes' => array(
 			'postType' => array(
 				'type' => 'string',
@@ -43,16 +42,11 @@ return array(
 			),
 			'postsToShow' => array(
 				'type' => 'number',
-				'default' => 5
+				'default' => 6
 			),
-			'categories' => array(
-				'type' => 'array',
-				'default' => array(
-					
-				),
-				'items' => array(
-					'type' => 'number'
-				)
+			'layout' => array(
+				'type' => 'string',
+				'default' => 'grid'
 			),
 			'displayImage' => array(
 				'type' => 'boolean',
@@ -64,26 +58,11 @@ return array(
 			),
 			'displayAuthor' => array(
 				'type' => 'boolean',
-				'default' => false
+				'default' => true
 			),
 			'displayDate' => array(
 				'type' => 'boolean',
-				'default' => false
-			),
-			'layout' => array(
-				'type' => 'string',
-				'default' => 'grid'
-			),
-			'pagination' => array(
-				'type' => 'boolean',
-				'default' => false
-			),
-			'className' => array(
-				'type' => 'string'
-			),
-			'postsPerPage' => array(
-				'type' => 'number',
-				'default' => 6
+				'default' => true
 			),
 			'enableLoadMore' => array(
 				'type' => 'boolean',
