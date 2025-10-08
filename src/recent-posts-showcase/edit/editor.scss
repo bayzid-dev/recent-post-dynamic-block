@@ -8,7 +8,8 @@
 /* ===========================
    Editor Sidebar Panel Styles
 =========================== */
-.recent-posts-showcase-inspector{
+.recent-posts-showcase-inspector {
+
     // .components-base-control.components-toggle-control {
     //     padding: 0 20px;
     // }
@@ -16,15 +17,58 @@
         background: #f0f0f0;
         border: none;
     }
+
     .recent-posts-showcase-display-settings {
         .components-toggle-control.components-base-control {
             margin-top: 20px;
             margin-bottom: 14px;
         }
+
         .components-toggle-control__label {
             font-weight: 500;
             font-size: 13px;
             color: rgba(0, 0, 0, 0.733);
         }
+    }
+
+
+
+
+}
+
+
+.recent-posts-showcase.list {
+    .recent-post-item {
+        display: flex;
+        gap: 2rem;
+    }
+}
+
+.recent-posts-showcase {
+    display: none;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+
+    .swiper-wrapper {
+        margin-bottom: 20px;
+    }
+
+    .swiper-pagination-bullets .swiper-pagination-bullet {
+        width: 12px;
+        height: 12px;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #444;
+        font-size: 20px;
+        height: auto;
+        padding: 6px 2px;
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+        font-size: 20px;
     }
 }

@@ -124,8 +124,17 @@
         margin-bottom: 20px;
     }
 
+    .swiper-button-next,
+    .swiper-button-prev {
+        border: 1px solid #444;
+        color: #444;
+        font-size: 20px;
+        height: auto;
+        padding: 6px 2px;
+    }
+
     .swiper-button-next:after,
     .swiper-button-prev:after {
-        font-size: 28px;
+        font-size: 20px;
     }
 }
